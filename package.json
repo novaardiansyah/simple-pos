@@ -1,12 +1,16 @@
 {
   "name": "simple-pos",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 6108 -H 100.108.9.46",
     "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "start": "next start -p 6108 -H 100.107.79.17",
+    "lint": "eslint",
+    "pm2:start": "pm2 start npm --name 'simple-pos' -- run start",
+    "pm2:stop": "pm2 stop simple-pos",
+    "pm2:restart": "pm2 restart simple-pos",
+    "pm2:delete": "pm2 delete simple-pos"
   },
   "dependencies": {
     "next": "16.1.5",
