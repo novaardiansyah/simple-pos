@@ -16,8 +16,14 @@ export async function POST(req: NextRequest) {
     );
 
     const data = await response.json();
+    const res = NextResponse.json(data, { status: response.status });
 
-    return NextResponse.json(data, { status: response.status });
+    const setCookie = response.headers.get("set-cookie");
+    if (setCookie) {
+      res.headers.set("set-cookie", setCookie);
+    }
+
+    return res;
   } catch {
     return NextResponse.json(
       { success: false, message: "Failed to connect to server", data: [] },
