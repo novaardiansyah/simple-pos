@@ -1,9 +1,11 @@
 "use client"
 
-import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut } from "lucide-react"
+import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Moon, Sun, Globe, User } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar"
+import { useLanguage } from "@/components/language-provider"
+import { useTheme } from "@/components/theme-provider"
 
 export function NavUser({
   user,
@@ -15,6 +17,16 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const { locale, setLocale, t } = useLanguage()
+  const { theme, setTheme } = useTheme()
+
+  const toggleLocale = () => {
+    setLocale(locale === "en" ? "id" : "en")
+  }
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark")
+  }
 
   return (
     <SidebarMenu>
@@ -57,7 +69,7 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem className="cursor-pointer">
-                <BadgeCheck />
+                <User />
                 Account
               </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer">
@@ -67,6 +79,16 @@ export function NavUser({
               <DropdownMenuItem className="cursor-pointer">
                 <Bell />
                 Notifications
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuGroup>
+              <DropdownMenuItem className="cursor-pointer" onClick={toggleTheme}>
+                {theme === "dark" ? <Sun /> : <Moon />}
+                {theme === "dark" ? "Light Mode" : "Dark Mode"}
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer" onClick={toggleLocale}>
+                <Globe />
+                {locale === "en" ? "Bahasa Indonesia" : "English"}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
