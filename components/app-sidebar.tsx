@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { BookOpen, GalleryVerticalEnd, LayoutDashboard, ShoppingCart, Store } from "lucide-react"
+import { BookOpen, LayoutDashboard, ShoppingCart, Store } from "lucide-react"
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
 import { TeamSwitcher } from "@/components/team-switcher"
