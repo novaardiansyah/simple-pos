@@ -36,7 +36,7 @@ export function TopMenu() {
                 }`}>
                   {item.rank}
                 </span>
-                <span className="text-sm font-medium text-slate-700 truncate max-w-[140px]">
+                <span className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate max-w-[140px]">
                   {item.name}
                 </span>
               </div>

@@ -6,9 +6,10 @@ import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { Separator } from "@/components/ui/separator"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 
 const chartData = [
-  { date: "2026-01-22", amount: 65000 },
+  { date: "2026-01-22", amount: 150000 },
   { date: "2026-01-23", amount: 120000 },
   { date: "2026-01-24", amount: 80000 },
   { date: "2026-01-25", amount: 150000 },
@@ -40,7 +41,7 @@ export function ChartLineInteractive() {
 
   return (
     <Card className="py-4 sm:py-0">
-      <CardHeader className="pb-0 pt-5">
+      <CardHeader className="pb-0 pt-0 md:pt-5">
         <CardTitle className="text-base mb-[-5px]">
           Grafik Pendapatan
         </CardTitle>
@@ -50,71 +51,75 @@ export function ChartLineInteractive() {
         <Separator className="mt-3" />
       </CardHeader>
       <CardContent className="px-2 sm:p-6">
-        <ChartContainer
-          config={chartConfig}
-          className="aspect-auto h-[250px] w-full"
-        >
-          <LineChart
-            accessibilityLayer
-            data={chartData}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
+        <ScrollArea>
+          <ChartContainer
+            config={chartConfig}
+            className="aspect-auto h-[250px] w-[40rem] md:w-full"
           >
-            <CartesianGrid vertical={false} />
-            <YAxis
-              dataKey="amount"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              minTickGap={32}
-              tickFormatter={(value) => {
-                return formatCurrency(value || 0)
+            <LineChart
+              accessibilityLayer
+              data={chartData}
+              margin={{
+                left: 32,
+                right: 12,
               }}
-            />
+            >
+              <CartesianGrid vertical={false} />
+              <YAxis
+                dataKey="amount"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                minTickGap={32}
+                tickFormatter={(value) => {
+                  return formatCurrency(value || 0)
+                }}
+              />
 
-            <XAxis
-              dataKey="date"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              minTickGap={32}
-              tickFormatter={(value) => {
-                const date = new Date(value)
-                return date.toLocaleDateString("id-ID", {
-                  month: "short",
-                  day: "numeric",
-                })
-              }}
-            />
-            <ChartTooltip
-              content={
-                <ChartTooltipContent
-                  className="w-[150px]"
-                  nameKey="views"
-                  labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString("id-ID", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })
-                  }}
-                  formatter={(value) => {
-                    return formatCurrency(parseInt(value.toString()))
-                  }}
-                />
-              }
-            />
-            <Line
-              dataKey={activeChart}
-              type="monotone"
-              stroke={`var(--color-${activeChart})`}
-              strokeWidth={2}
-              dot={false}
-            />
-          </LineChart>
-        </ChartContainer>
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                minTickGap={32}
+                tickFormatter={(value) => {
+                  const date = new Date(value)
+                  return date.toLocaleDateString("id-ID", {
+                    month: "short",
+                    day: "numeric",
+                  })
+                }}
+              />
+              <ChartTooltip
+                content={
+                  <ChartTooltipContent
+                    className="w-[150px]"
+                    nameKey="views"
+                    labelFormatter={(value) => {
+                      return new Date(value).toLocaleDateString("id-ID", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })
+                    }}
+                    formatter={(value) => {
+                      return formatCurrency(parseInt(value.toString()))
+                    }}
+                  />
+                }
+              />
+              <Line
+                dataKey={activeChart}
+                type="monotone"
+                stroke={`var(--color-${activeChart})`}
+                strokeWidth={2}
+                dot={false}
+              />
+            </LineChart>
+          </ChartContainer>
+
+          <ScrollBar orientation="horizontal" className="hidden" />
+        </ScrollArea>
       </CardContent>
     </Card>
   )
