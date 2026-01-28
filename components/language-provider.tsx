@@ -11,7 +11,7 @@ type LanguageContextType = {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
-const STORAGE_KEY = "simplepos-locale"
+const STORAGE_KEY = "locale"
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>("id")

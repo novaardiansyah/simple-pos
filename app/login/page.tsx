@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -11,12 +10,13 @@ import { useLanguage } from "@/components/language-provider"
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline"
 import { AuthService } from "@/services"
 import { withGuest } from "@/lib/withAuth"
+import { useAuth } from "@/contexts/auth-context"
 
 function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const { locale, setLocale, t } = useLanguage()
-  const router = useRouter()
+  const { login } = useAuth()
 
   const initialFormData = {
     email: '',
@@ -59,10 +59,8 @@ function LoginPage() {
       }
 
       const { token } = res.data
-      localStorage.setItem("auth_token", token)
-
       setFormData(initialFormData)
-      router.push("/")
+      return login(token)
     } finally {
       setIsLoading(false)
     }
@@ -150,7 +148,7 @@ function LoginPage() {
           </CardContent>
 
           <CardFooter className="flex flex-col gap-4 mt-4">
-            <Button type="submit" disabled={isLoading} className="w-full">
+            <Button type="submit" disabled={isLoading} className={"w-full " + (isLoading ? "cursor-not-allowed" : "cursor-pointer")}>
               {isLoading ? t.login.signingIn : t.login.signIn}
             </Button>
 
@@ -165,7 +163,7 @@ function LoginPage() {
               </div>
             </div>
 
-            <Button type="button" variant="outline" className="w-full">
+            <Button type="button" variant="outline" disabled={isLoading} className={"w-full " + (isLoading ? "cursor-not-allowed" : "cursor-pointer")}>
               <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
                 <path
                   fill="#4285F4"
