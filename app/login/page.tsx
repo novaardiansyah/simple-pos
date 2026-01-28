@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -22,24 +22,35 @@ function LoginPage() {
   const { login } = useAuth()
   const { theme, setTheme } = useTheme()
 
+  useEffect(() => {
+    const remember = localStorage.getItem("remember")
+    if (remember) {
+      const { email } = JSON.parse(remember)
+      handleInputChange("email", email)
+      handleInputChange("rememberMe", true)
+    }
+  }, [])
+
   const initialFormData = {
     email: '',
     password: '',
+    rememberMe: false,
   };
 
   const initialErrors = {
     email: '',
     password: '',
+    rememberMe: '',
   };
 
   const [formData, setFormData] = useState(initialFormData)
   const [errors, setErrors] = useState(initialErrors)
 
-  const handleInputChange = (field: keyof typeof formData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const handleInputChange = (field: keyof typeof formData, value: string | boolean) => {
+    setFormData(prev => ({ ...prev, [field]: value }))
 
     if (errors[field as keyof typeof errors]) {
-      setErrors(prev => ({ ...prev, [field as keyof typeof errors]: '' }));
+      setErrors(prev => ({ ...prev, [field as keyof typeof errors]: '' }))
     }
   }
 
@@ -66,6 +77,9 @@ function LoginPage() {
       setFormData(initialFormData)
       return login(token)
     } finally {
+      if (formData.rememberMe) {
+        localStorage.setItem("remember", JSON.stringify({ email: formData.email }))
+      }
       setIsLoading(false)
     }
   }
@@ -146,8 +160,8 @@ function LoginPage() {
                 </FieldDescription>
               </Field>
 
-              <Field orientation="horizontal">
-                <Checkbox id="remember-me" name="remember-me" />
+              <Field orientation="horizontal" className="mt-[-1rem]">
+                <Checkbox id="remember-me" name="remember-me" onCheckedChange={(e) => handleInputChange("rememberMe", !formData.rememberMe)} checked={formData.rememberMe} />
                 <FieldLabel htmlFor="remember-me">
                   {t.login.rememberMe}
                 </FieldLabel>
@@ -155,7 +169,7 @@ function LoginPage() {
             </FieldGroup>
           </CardContent>
 
-          <CardFooter className="flex flex-col gap-4 mt-4">
+          <CardFooter className="flex flex-col gap-4 mt-6">
             <Button type="submit" disabled={isLoading} className={"w-full " + (isLoading ? "cursor-not-allowed" : "cursor-pointer")}>
               {isLoading ? t.login.signingIn : t.login.signIn}
             </Button>
