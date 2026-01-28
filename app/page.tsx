@@ -4,8 +4,9 @@ import { MainLayout } from "@/components/main-layout"
 import { ChartLineInteractive } from "@/components/main/chartIncome"
 import { DashboardStats } from "@/components/main/dashboardStats"
 import { TopMenu } from "@/components/main/topMenu"
+import { withAuth } from "@/lib/withAuth"
 
-export default function Page() {
+const DashboardPage = () => {
   return (
     <MainLayout
       breadcrumbs={[
@@ -25,3 +26,5 @@ export default function Page() {
     </MainLayout>
   )
 }
+
+export default withAuth(DashboardPage)
