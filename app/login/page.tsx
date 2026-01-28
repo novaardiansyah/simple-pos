@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -22,15 +22,6 @@ function LoginPage() {
   const { login } = useAuth()
   const { theme, setTheme } = useTheme()
 
-  useEffect(() => {
-    const remember = localStorage.getItem("remember")
-    if (remember) {
-      const { email } = JSON.parse(remember)
-      handleInputChange("email", email)
-      handleInputChange("rememberMe", true)
-    }
-  }, [])
-
   const initialFormData = {
     email: '',
     password: '',
@@ -46,13 +37,22 @@ function LoginPage() {
   const [formData, setFormData] = useState(initialFormData)
   const [errors, setErrors] = useState(initialErrors)
 
-  const handleInputChange = (field: keyof typeof formData, value: string | boolean) => {
+  const handleInputChange = useCallback((field: keyof typeof initialFormData, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }))
 
-    if (errors[field as keyof typeof errors]) {
-      setErrors(prev => ({ ...prev, [field as keyof typeof errors]: '' }))
+    if (errors[field as keyof typeof initialErrors]) {
+      setErrors(prev => ({ ...prev, [field as keyof typeof initialErrors]: '' }))
     }
-  }
+  }, [errors])
+
+  useEffect(() => {
+    const remember = localStorage.getItem("remember")
+    if (remember) {
+      const { email } = JSON.parse(remember)
+      handleInputChange("email", email)
+      handleInputChange("rememberMe", true)
+    }
+  }, [handleInputChange])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -161,7 +161,7 @@ function LoginPage() {
               </Field>
 
               <Field orientation="horizontal" className="mt-[-1rem]">
-                <Checkbox id="remember-me" name="remember-me" onCheckedChange={(e) => handleInputChange("rememberMe", !formData.rememberMe)} checked={formData.rememberMe} />
+                <Checkbox id="remember-me" name="remember-me" onCheckedChange={() => handleInputChange("rememberMe", !formData.rememberMe)} checked={formData.rememberMe} />
                 <FieldLabel htmlFor="remember-me">
                   {t.login.rememberMe}
                 </FieldLabel>

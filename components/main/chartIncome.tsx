@@ -29,7 +29,7 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function ChartLineInteractive() {
-  const [activeChart, setActiveChart] = React.useState('amount')
+  const activeChart = 'amount'
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("id-ID", {

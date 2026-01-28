@@ -8,17 +8,26 @@ type AuthContextType = {
   login: (token: string) => void
   logout: () => void
 }
-
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    if (typeof window !== "undefined") {
+      return !!localStorage.getItem("auth_token")
+    }
+    return false
+  })
   const router = useRouter()
 
   useEffect(() => {
     const token = localStorage.getItem("auth_token")
-    setIsAuthenticated(!!token)
-  }, [])
+    const isAuth = !!token
+    if (isAuth !== isAuthenticated) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsAuthenticated(isAuth)
+    }
+  }, [isAuthenticated])
+
 
   const login = (token: string) => {
     localStorage.setItem("auth_token", token)
