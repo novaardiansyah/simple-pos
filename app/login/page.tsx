@@ -5,23 +5,63 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
+import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { useLanguage } from "@/components/language-provider"
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline"
+import { AuthService } from "@/services"
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const { locale, setLocale, t } = useLanguage()
 
+  const initialFormData = {
+    email: '',
+    password: '',
+  };
+
+  const initialErrors = {
+    email: '',
+    password: '',
+  };
+
+  const [formData, setFormData] = useState(initialFormData)
+  const [errors, setErrors] = useState(initialErrors)
+
+  const handleInputChange = (field: keyof typeof formData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+
+    if (errors[field as keyof typeof errors]) {
+      setErrors(prev => ({ ...prev, [field as keyof typeof errors]: '' }));
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    setTimeout(() => {
+
+    try {
+      const res = await AuthService.login(formData)
+
+      if (res?.errors) {
+        const newErrors = { ...errors };
+
+        Object.entries(res.errors).forEach(([field, messages]) => {
+          if (Array.isArray(messages) && messages.length > 0 && field in newErrors) {
+            newErrors[field as keyof typeof errors] = messages[0] as string;
+          }
+        })
+
+        return setErrors(newErrors)
+      }
+
+      const { token } = res.data
+      localStorage.setItem("auth_token", token)
+
+      setFormData(initialFormData)
+    } finally {
       setIsLoading(false)
-    }, 1500)
+    }
   }
 
   const toggleLocale = () => {
@@ -44,20 +84,26 @@ export default function LoginPage() {
           <CardContent>
             <FieldGroup>
               <Field>
-                <FieldLabel htmlFor="email">{t.login.email}</FieldLabel>
+                <FieldLabel htmlFor="input-required">
+                  {t.login.email} <span className="text-destructive">*</span>
+                </FieldLabel>
                 <Input
                   id="email"
                   type="email"
                   placeholder={t.login.emailPlaceholder}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
+                  value={formData.email}
+                  onChange={(e) => handleInputChange("email", e.target.value)}
                 />
+                <FieldDescription className="text-destructive">
+                  {errors.email}
+                </FieldDescription>
               </Field>
 
               <Field>
                 <div className="flex items-center justify-between">
-                  <FieldLabel htmlFor="password">{t.login.password}</FieldLabel>
+                  <FieldLabel htmlFor="input-required">
+                    {t.login.password} <span className="text-destructive">*</span>
+                  </FieldLabel>
                   <a href="#" className="text-sm text-muted-foreground hover:underline">
                     {t.login.forgotPassword}
                   </a>
@@ -67,9 +113,8 @@ export default function LoginPage() {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder={t.login.passwordPlaceholder}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
+                    value={formData.password}
+                    onChange={(e) => handleInputChange("password", e.target.value)}
                     className="pr-10"
                   />
                   <Button
@@ -86,6 +131,9 @@ export default function LoginPage() {
                     )}
                   </Button>
                 </div>
+                <FieldDescription className="text-destructive">
+                  {errors.password}
+                </FieldDescription>
               </Field>
 
               <Field orientation="horizontal">
