@@ -29,6 +29,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsAuthenticated(isAuth)
     }
+    setIsLoading(false)
   }, [isAuthenticated])
 
 
