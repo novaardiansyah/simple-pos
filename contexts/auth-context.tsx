@@ -5,12 +5,15 @@ import { useRouter } from "next/navigation"
 
 type AuthContextType = {
   isAuthenticated: boolean
+  isLoading: boolean
   login: (token: string) => void
   logout: () => void
 }
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const [isLoading, setIsLoading] = useState(true)
+
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     if (typeof window !== "undefined") {
       return !!localStorage.getItem("auth_token")
@@ -30,19 +33,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 
   const login = (token: string) => {
+    setIsLoading(true)
     localStorage.setItem("auth_token", token)
     setIsAuthenticated(true)
     router.push("/")
+    setIsLoading(false)
   }
 
   const logout = () => {
+    setIsLoading(true)
     localStorage.removeItem("auth_token")
     setIsAuthenticated(false)
     router.push("/login")
+    setIsLoading(false)
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, isLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   )
