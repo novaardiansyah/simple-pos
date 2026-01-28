@@ -1,6 +1,9 @@
 "use client"
 
 import { MainLayout } from "@/components/main-layout"
+import { ChartLineInteractive } from "@/components/main/chartIncome"
+import { DashboardStats } from "@/components/main/dashboardStats"
+import { TopMenu } from "@/components/main/topMenu"
 
 export default function Page() {
   return (
@@ -10,12 +13,15 @@ export default function Page() {
         { label: "Dashboard" }
       ]}
     >
-      <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-        <div className="bg-muted/50 aspect-video rounded-xl" />
-        <div className="bg-muted/50 aspect-video rounded-xl" />
-        <div className="bg-muted/50 aspect-video rounded-xl" />
+      <DashboardStats />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+        <div className="md:col-span-2">
+          <ChartLineInteractive />
+        </div>
+        <div className="md:col-span-1">
+          <TopMenu />
+        </div>
       </div>
-      <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
     </MainLayout>
   )
 }
