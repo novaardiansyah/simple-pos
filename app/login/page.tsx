@@ -12,11 +12,15 @@ import { AuthService } from "@/services"
 import { withGuest } from "@/lib/withAuth"
 import { useAuth } from "@/contexts/auth-context"
 
+import { useTheme } from "@/components/theme-provider"
+import { SunIcon, MoonIcon } from "lucide-react"
+
 function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const { locale, setLocale, t } = useLanguage()
   const { login } = useAuth()
+  const { theme, setTheme } = useTheme()
 
   const initialFormData = {
     email: '',
@@ -68,6 +72,10 @@ function LoginPage() {
 
   const toggleLocale = () => {
     setLocale(locale === "en" ? "id" : "en")
+  }
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark")
   }
 
   return (
@@ -195,14 +203,27 @@ function LoginPage() {
         </form>
       </Card>
 
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={toggleLocale}
-        className="fixed bottom-4 right-4"
-      >
-        {locale === "en" ? "ID" : "EN"}
-      </Button>
+      <div className="fixed bottom-4 right-4 flex gap-2">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleTheme}
+          className="h-8 w-8"
+        >
+          {theme === "dark" ? (
+            <SunIcon className="h-4 w-4" />
+          ) : (
+            <MoonIcon className="h-4 w-4" />
+          )}
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={toggleLocale}
+        >
+          {locale === "en" ? "ID" : "EN"}
+        </Button>
+      </div>
     </div>
   )
 }
