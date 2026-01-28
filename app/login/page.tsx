@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,22 +10,13 @@ import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui
 import { useLanguage } from "@/components/language-provider"
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline"
 import { AuthService } from "@/services"
+import { withGuest } from "@/lib/withAuth"
 
-export default function LoginPage() {
+function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true)
   const { locale, setLocale, t } = useLanguage()
   const router = useRouter()
-
-  useEffect(() => {
-    const token = localStorage.getItem("auth_token")
-    if (token) {
-      router.replace("/")
-    } else {
-      setIsCheckingAuth(false)
-    }
-  }, [router])
 
   const initialFormData = {
     email: '',
@@ -79,14 +70,6 @@ export default function LoginPage() {
 
   const toggleLocale = () => {
     setLocale(locale === "en" ? "id" : "en")
-  }
-
-  if (isCheckingAuth) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    )
   }
 
   return (
@@ -225,3 +208,5 @@ export default function LoginPage() {
     </div>
   )
 }
+
+export default withGuest(LoginPage)
