@@ -16,7 +16,19 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<User | null>(() => {
+    if (typeof window !== "undefined") {
+      const storedUser = localStorage.getItem("auth_user")
+      if (storedUser) {
+        try {
+          return JSON.parse(storedUser) as User
+        } catch {
+          return null
+        }
+      }
+    }
+    return null
+  })
 
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     if (typeof window !== "undefined") {
@@ -27,19 +39,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter()
 
   useEffect(() => {
-    const token = localStorage.getItem("auth_token")
-    const isAuth = !!token
-    if (isAuth !== isAuthenticated) {
-      setIsAuthenticated(isAuth)
-    }
-
-    const storedUser = localStorage.getItem("auth_user")
-    if (storedUser) {
-      setUser(JSON.parse(storedUser) as User)
-    }
-
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(false)
-  }, [isAuthenticated])
+  }, [])
 
 
   const login = async (token: string) => {
