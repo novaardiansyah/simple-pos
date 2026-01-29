@@ -24,9 +24,13 @@ export const members = {
   },
   toolbar: {
     columns: "Kolom",
+    filter: "Filter",
+    filterTitle: "Filter Data",
     dateFilter: "Filter Tanggal",
     pickDate: "Pilih tanggal",
     clearDate: "Hapus",
+    clearAll: "Hapus Semua",
+    apply: "Terapkan",
     sortAsc: "Urutkan A-Z",
     sortDesc: "Urutkan Z-A",
   },

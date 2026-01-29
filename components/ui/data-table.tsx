@@ -23,16 +23,21 @@ import {
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
-import { ArrowUpDown, CalendarIcon, ChevronLeft, ChevronRight, Settings2, X } from "lucide-react"
+import { ArrowUpDown, ChevronLeft, ChevronRight, Filter, Settings2 } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Calendar } from "@/components/ui/calendar"
-import { format } from "date-fns"
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  SheetFooter,
+} from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
 
 interface DataTableProps<TData, TValue> {
@@ -41,7 +46,7 @@ interface DataTableProps<TData, TValue> {
   searchPlaceholder?: string
   searchKey?: string
   noResultsText?: string
-  dateFilterKey?: string
+  filterContent?: React.ReactNode
   paginationLabels?: {
     previous: string
     next: string
@@ -53,12 +58,18 @@ interface DataTableProps<TData, TValue> {
   }
   toolbarLabels?: {
     columns: string
+    filter: string
+    filterTitle: string
     dateFilter: string
     pickDate: string
     clearDate: string
+    clearAll: string
+    apply: string
     sortAsc: string
     sortDesc: string
   }
+  onApplyFilter?: () => void
+  onClearFilter?: () => void
 }
 
 export function DataTable<TData, TValue>({
@@ -67,7 +78,7 @@ export function DataTable<TData, TValue>({
   searchPlaceholder = "Search...",
   searchKey = "name",
   noResultsText = "No results found.",
-  dateFilterKey,
+  filterContent,
   paginationLabels = {
     previous: "Previous",
     next: "Next",
@@ -79,28 +90,27 @@ export function DataTable<TData, TValue>({
   },
   toolbarLabels = {
     columns: "Columns",
+    filter: "Filter",
+    filterTitle: "Filter Data",
     dateFilter: "Filter by Date",
     pickDate: "Pick a date",
     clearDate: "Clear",
+    clearAll: "Clear All",
+    apply: "Apply",
     sortAsc: "Sort Ascending",
     sortDesc: "Sort Descending",
   },
+  onApplyFilter,
+  onClearFilter,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
-  const [dateFilter, setDateFilter] = useState<Date | undefined>(undefined)
-
-  const filteredData = dateFilterKey && dateFilter
-    ? data.filter((row) => {
-        const rowDate = new Date((row as Record<string, unknown>)[dateFilterKey] as string)
-        return rowDate.toDateString() === dateFilter.toDateString()
-      })
-    : data
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
-    data: filteredData,
+    data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -121,78 +131,75 @@ export function DataTable<TData, TValue>({
     },
   })
 
+  const handleApplyFilter = () => {
+    setIsFilterOpen(false)
+    onApplyFilter?.()
+  }
+
+  const handleClearFilter = () => {
+    onClearFilter?.()
+  }
+
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          {dateFilterKey && (
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-[200px] justify-start text-left font-normal",
-                    !dateFilter && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {dateFilter ? format(dateFilter, "PPP") : toolbarLabels.pickDate}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={dateFilter}
-                  onSelect={setDateFilter}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-          )}
-          {dateFilter && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setDateFilter(undefined)}
-            >
-              <X className="h-4 w-4 mr-1" />
-              {toolbarLabels.clearDate}
+      <div className="flex items-center justify-end gap-2">
+        <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+          <SheetTrigger asChild>
+            <Button variant="outline" size="sm">
+              <Filter className="h-4 w-4 mr-2" />
+              {toolbarLabels.filter}
             </Button>
-          )}
-        </div>
-        <div className="flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <Settings2 className="h-4 w-4 mr-2" />
-                {toolbarLabels.columns}
+          </SheetTrigger>
+          <SheetContent side="right" className="w-[400px] sm:w-[450px]">
+            <SheetHeader>
+              <SheetTitle>{toolbarLabels.filterTitle}</SheetTitle>
+            </SheetHeader>
+            <div className="flex-1 overflow-y-auto px-4 py-4">
+              <div className="space-y-4">
+                {filterContent}
+              </div>
+            </div>
+            <SheetFooter>
+              <Button variant="outline" onClick={handleClearFilter}>
+                {toolbarLabels.clearAll}
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <Input
-            placeholder={searchPlaceholder}
-            value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn(searchKey)?.setFilterValue(event.target.value)
-            }
-            className="max-w-xs"
-          />
-        </div>
+              <Button onClick={handleApplyFilter}>
+                {toolbarLabels.apply}
+              </Button>
+            </SheetFooter>
+          </SheetContent>
+        </Sheet>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm">
+              <Settings2 className="h-4 w-4 mr-2" />
+              {toolbarLabels.columns}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter((column) => column.getCanHide())
+              .map((column) => (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize"
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                >
+                  {column.id}
+                </DropdownMenuCheckboxItem>
+              ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <Input
+          placeholder={searchPlaceholder}
+          value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn(searchKey)?.setFilterValue(event.target.value)
+          }
+          className="max-w-xs"
+        />
       </div>
       <div className="rounded-md border">
         <Table>

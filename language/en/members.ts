@@ -24,9 +24,13 @@ export const members = {
   },
   toolbar: {
     columns: "Columns",
+    filter: "Filter",
+    filterTitle: "Filter Data",
     dateFilter: "Filter by Date",
     pickDate: "Pick a date",
     clearDate: "Clear",
+    clearAll: "Clear All",
+    apply: "Apply",
     sortAsc: "Sort Ascending",
     sortDesc: "Sort Descending",
   },

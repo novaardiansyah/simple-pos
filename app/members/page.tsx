@@ -68,7 +68,7 @@ const MembersPage = () => {
   return (
     <MainLayout
       breadcrumbs={[
-        { label: t.members.breadcrumbs.general, href: "/" },
+        { label: t.members.breadcrumbs.general, href: "/members" },
         { label: t.members.breadcrumbs.members }
       ]}
     >
@@ -88,7 +88,6 @@ const MembersPage = () => {
             noResultsText={t.members.noResults}
             paginationLabels={t.members.pagination}
             toolbarLabels={t.members.toolbar}
-            dateFilterKey="joinDate"
           />
         </CardContent>
       </Card>
