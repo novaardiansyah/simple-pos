@@ -6,83 +6,89 @@ import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
 import { TeamSwitcher } from "@/components/team-switcher"
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from "@/components/ui/sidebar"
+import { useLanguage } from "@/components/language-provider"
+import { useAuth } from "@/contexts/auth-context"
 
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+const teams = [
+  {
+    name: "Simple POS",
+    logo: Store,
+    plan: "Enterprise",
   },
-  teams: [
+]
+
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { t } = useLanguage()
+  const { user } = useAuth()
+
+  const navMain = [
     {
-      name: "Simple POS",
-      logo: Store,
-      plan: "Enterprise",
-    },
-  ],
-  navMain: [
-    {
-      title: "Umum",
+      title: t.sidebar.nav.general,
       url: "#",
       icon: LayoutDashboard,
       isActive: true,
       items: [
         {
-          title: "Dashboard",
+          title: t.sidebar.nav.dashboard,
           url: "#",
         },
         {
-          title: "Mesin Kasir",
+          title: t.sidebar.nav.cashier,
           url: "#",
         },
         {
-          title: "Pengguna",
+          title: t.sidebar.nav.users,
           url: "#",
         },
       ],
     },
     {
-      title: "Operasional",
+      title: t.sidebar.nav.operations,
       url: "#",
       icon: ShoppingCart,
       items: [
         {
-          title: "Dapur (KDS)",
+          title: t.sidebar.nav.kitchen,
           url: "#",
         },
         {
-          title: "Restock Barang",
+          title: t.sidebar.nav.restock,
           url: "#",
         },
       ],
     },
     {
-      title: "Laporan",
+      title: t.sidebar.nav.reports,
       url: "#",
       icon: BookOpen,
       items: [
         {
-          title: "Laporan Transaksi",
+          title: t.sidebar.nav.transactionReport,
           url: "#",
         },
       ],
     },
-  ],
-}
+  ]
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const userData = {
+    name: user?.name || "Guest",
+    email: user?.email || "guest@example.com",
+    avatar: "/avatars/shadcn.jpg",
+  }
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <TeamSwitcher teams={teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userData} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   )
 }
+

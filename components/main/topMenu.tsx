@@ -6,12 +6,12 @@ import { TrophyIcon } from "lucide-react"
 import { useLanguage } from "@/components/language-provider"
 
 const topMenuData = [
-  { rank: 1, name: "Mie Ayam Bakso", sold: 24 },
-  { rank: 2, name: "Kopi Susu Gula Aren", sold: 18 },
-  { rank: 3, name: "Nasi Padang Komplit", sold: 12 },
-  { rank: 4, name: "Soto Ayam", sold: 9 },
-  { rank: 5, name: "Es Teh Manis", sold: 7 },
-  { rank: 6, name: "French Fries", sold: 5 },
+  { rank: 1, name: "Classic Cheeseburger", sold: 24 },
+  { rank: 2, name: "Pepperoni Pizza", sold: 18 },
+  { rank: 3, name: "Caesar Salad", sold: 12 },
+  { rank: 4, name: "Grilled Salmon", sold: 9 },
+  { rank: 5, name: "Iced Caramel Macchiato", sold: 7 },
+  { rank: 6, name: "Chocolate Brownie", sold: 5 },
 ]
 
 export function TopMenu() {

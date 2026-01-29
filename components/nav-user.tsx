@@ -6,6 +6,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar"
 import { useLanguage } from "@/components/language-provider"
 import { useTheme } from "@/components/theme-provider"
+import { useAuth } from "@/contexts/auth-context"
 
 export function NavUser({
   user,
@@ -17,8 +18,9 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
-  const { locale, setLocale } = useLanguage()
+  const { locale, setLocale, t } = useLanguage()
   const { theme, setTheme } = useTheme()
+  const { logout } = useAuth()
 
   const toggleLocale = () => {
     setLocale(locale === "en" ? "id" : "en")
@@ -26,6 +28,10 @@ export function NavUser({
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark")
+  }
+
+  const handleLogout = () => {
+    logout()
   }
 
   return (
@@ -70,21 +76,21 @@ export function NavUser({
             <DropdownMenuGroup>
               <DropdownMenuItem className="cursor-pointer">
                 <User />
-                Account
+                {t.sidebar.user.account}
               </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer">
                 <CreditCard />
-                Billing
+                {t.sidebar.user.billing}
               </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer">
                 <Bell />
-                Notifications
+                {t.sidebar.user.notifications}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuGroup>
               <DropdownMenuItem className="cursor-pointer" onClick={toggleTheme}>
                 {theme === "dark" ? <Sun /> : <Moon />}
-                {theme === "dark" ? "Light Mode" : "Dark Mode"}
+                {theme === "dark" ? t.sidebar.user.lightMode : t.sidebar.user.darkMode}
               </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer" onClick={toggleLocale}>
                 <Globe />
@@ -92,9 +98,9 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
               <LogOut />
-              Log out
+              {t.sidebar.user.logout}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -102,3 +108,4 @@ export function NavUser({
     </SidebarMenu>
   )
 }
+
