@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { TrophyIcon } from "lucide-react"
+import { useLanguage } from "@/components/language-provider"
 
 const topMenuData = [
   { rank: 1, name: "Mie Ayam Bakso", sold: 24 },
@@ -14,12 +15,14 @@ const topMenuData = [
 ]
 
 export function TopMenu() {
+  const { t } = useLanguage()
+
   return (
     <Card className="h-full py-0">
       <CardHeader className="pb-0 pt-5">
         <CardTitle className="flex items-center gap-2 text-base">
           <TrophyIcon className="h-5 w-5 text-amber-500" />
-          Menu Terlaris Hari Ini
+          {t.dashboard.topMenu.title}
         </CardTitle>
         <Separator className="mt-3" />
       </CardHeader>
@@ -41,7 +44,7 @@ export function TopMenu() {
                 </span>
               </div>
               <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
-                {item.sold} Terjual
+                {item.sold} {t.dashboard.stats.sold}
               </span>
             </div>
           ))}
@@ -50,3 +53,4 @@ export function TopMenu() {
     </Card>
   )
 }
+

@@ -2,6 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card"
 import { CreditCardIcon, WalletIcon, ReceiptTextIcon, PackageXIcon } from "lucide-react"
+import { useLanguage } from "@/components/language-provider"
 
 interface StatCardProps {
   title: string
@@ -61,6 +62,8 @@ function StatCard({ title, value, subtitle, icon, variant = "default" }: StatCar
 }
 
 export function DashboardStats() {
+  const { t } = useLanguage()
+
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("id-ID", {
       style: "currency",
@@ -72,33 +75,34 @@ export function DashboardStats() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       <StatCard
-        title="Pendapatan"
+        title={t.dashboard.stats.revenue}
         value={formatCurrency(111000)}
-        subtitle="Hari ini"
+        subtitle={t.dashboard.stats.revenueSubtitle}
         icon={<WalletIcon className="h-5 w-5" />}
         variant="primary"
       />
       <StatCard
-        title="Laba Bersih"
+        title={t.dashboard.stats.netProfit}
         value={formatCurrency(100000)}
-        subtitle="Setelah Modal & PPN"
+        subtitle={t.dashboard.stats.netProfitSubtitle}
         icon={<CreditCardIcon className="h-5 w-5" />}
         variant="secondary"
       />
       <StatCard
-        title="Transaksi"
+        title={t.dashboard.stats.transactions}
         value="3"
-        subtitle="Nota tercetak"
+        subtitle={t.dashboard.stats.transactionsSubtitle}
         icon={<ReceiptTextIcon className="h-5 w-5" />}
         variant="default"
       />
       <StatCard
-        title="Stok Menipis"
+        title={t.dashboard.stats.lowStock}
         value="0"
-        subtitle="Perlu Restock!"
+        subtitle={t.dashboard.stats.lowStockSubtitle}
         icon={<PackageXIcon className="h-5 w-5" />}
         variant="warning"
       />
     </div>
   )
 }
+

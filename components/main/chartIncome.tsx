@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { useLanguage } from "@/components/language-provider"
 
 const chartData = [
   { date: "2026-01-22", amount: 150000 },
@@ -29,6 +30,7 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function ChartLineInteractive() {
+  const { t } = useLanguage()
   const activeChart = 'amount'
 
   const formatCurrency = (value: number) => {
@@ -43,10 +45,10 @@ export function ChartLineInteractive() {
     <Card className="py-4 sm:py-0">
       <CardHeader className="pb-0 pt-0 md:pt-5">
         <CardTitle className="text-base mb-[-5px]">
-          Grafik Pendapatan
+          {t.dashboard.chart.title}
         </CardTitle>
         <CardDescription className="text-sm">
-          Menampilkan total pendapatan 7 hari terakhir
+          {t.dashboard.chart.subtitle}
         </CardDescription>
         <Separator className="mt-3" />
       </CardHeader>
@@ -124,3 +126,4 @@ export function ChartLineInteractive() {
     </Card>
   )
 }
+

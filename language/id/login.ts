@@ -1,0 +1,16 @@
+export const login = {
+  title: "Selamat Datang",
+  subtitle: "Masuk ke akun SimplePOS Anda",
+  email: "Email",
+  emailPlaceholder: "nama@contoh.com",
+  password: "Kata Sandi",
+  passwordPlaceholder: "••••••••",
+  forgotPassword: "Lupa kata sandi?",
+  rememberMe: "Ingat saya",
+  signIn: "Masuk",
+  signingIn: "Sedang masuk...",
+  orContinueWith: "Atau lanjutkan dengan",
+  google: "Google",
+  noAccount: "Belum punya akun?",
+  signUp: "Daftar",
+}

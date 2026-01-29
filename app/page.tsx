@@ -5,13 +5,16 @@ import { ChartLineInteractive } from "@/components/main/chartIncome"
 import { DashboardStats } from "@/components/main/dashboardStats"
 import { TopMenu } from "@/components/main/topMenu"
 import { withAuth } from "@/lib/withAuth"
+import { useLanguage } from "@/components/language-provider"
 
 const DashboardPage = () => {
+  const { t } = useLanguage()
+
   return (
     <MainLayout
       breadcrumbs={[
-        { label: "Umum", href: "/" },
-        { label: "Dashboard" }
+        { label: t.dashboard.breadcrumbs.general, href: "/" },
+        { label: t.dashboard.breadcrumbs.dashboard }
       ]}
     >
       <DashboardStats />
@@ -28,3 +31,4 @@ const DashboardPage = () => {
 }
 
 export default withAuth(DashboardPage)
+

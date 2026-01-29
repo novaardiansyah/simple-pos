@@ -1,0 +1,16 @@
+export const login = {
+  title: "Welcome Back",
+  subtitle: "Sign in to your SimplePOS account",
+  email: "Email",
+  emailPlaceholder: "name@example.com",
+  password: "Password",
+  passwordPlaceholder: "••••••••",
+  forgotPassword: "Forgot password?",
+  rememberMe: "Remember me",
+  signIn: "Sign In",
+  signingIn: "Signing in...",
+  orContinueWith: "Or continue with",
+  google: "Google",
+  noAccount: "Don't have an account?",
+  signUp: "Sign up",
+}
