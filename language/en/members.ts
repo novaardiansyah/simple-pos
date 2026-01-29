@@ -34,4 +34,10 @@ export const members = {
     sortAsc: "Sort Ascending",
     sortDesc: "Sort Descending",
   },
+  filter: {
+    joinDateRange: "Join Date Range",
+    startDate: "Start Date",
+    endDate: "End Date",
+    selectDate: "Select date",
+  },
 }

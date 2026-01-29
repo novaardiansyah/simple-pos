@@ -34,4 +34,10 @@ export const members = {
     sortAsc: "Urutkan A-Z",
     sortDesc: "Urutkan Z-A",
   },
+  filter: {
+    joinDateRange: "Rentang Tanggal Bergabung",
+    startDate: "Tanggal Mulai",
+    endDate: "Tanggal Akhir",
+    selectDate: "Pilih tanggal",
+  },
 }

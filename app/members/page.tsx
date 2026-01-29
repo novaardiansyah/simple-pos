@@ -6,7 +6,14 @@ import { useLanguage } from "@/components/language-provider"
 import { DataTable } from "@/components/ui/data-table"
 import { ColumnDef } from "@tanstack/react-table"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users } from "lucide-react"
+import { Users, CalendarIcon, X } from "lucide-react"
+import { useState, useMemo } from "react"
+import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Calendar } from "@/components/ui/calendar"
+import { format } from "date-fns"
+import { cn } from "@/lib/utils"
 
 interface Member {
   id: string
@@ -37,6 +44,10 @@ const dummyMembers: Member[] = [
 
 const MembersPage = () => {
   const { t } = useLanguage()
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined)
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined)
+  const [appliedStartDate, setAppliedStartDate] = useState<Date | undefined>(undefined)
+  const [appliedEndDate, setAppliedEndDate] = useState<Date | undefined>(undefined)
 
   const columns: ColumnDef<Member>[] = [
     {
@@ -65,6 +76,102 @@ const MembersPage = () => {
     },
   ]
 
+  const filteredData = useMemo(() => {
+    if (!appliedStartDate && !appliedEndDate) return dummyMembers
+    return dummyMembers.filter((member) => {
+      const joinDate = new Date(member.joinDate)
+      if (appliedStartDate && joinDate < appliedStartDate) return false
+      if (appliedEndDate && joinDate > appliedEndDate) return false
+      return true
+    })
+  }, [appliedStartDate, appliedEndDate])
+
+  const handleApplyFilter = () => {
+    setAppliedStartDate(startDate)
+    setAppliedEndDate(endDate)
+  }
+
+  const handleClearFilter = () => {
+    setStartDate(undefined)
+    setEndDate(undefined)
+    setAppliedStartDate(undefined)
+    setAppliedEndDate(undefined)
+  }
+
+  const filterContent = (
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <Label className="font-medium pb-2">{t.members.filter.joinDateRange}</Label>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1">
+            <Label className="text-xs text-muted-foreground">{t.members.filter.startDate}</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !startDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {startDate ? format(startDate, "PP") : t.members.filter.selectDate}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={startDate}
+                  onSelect={setStartDate}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+          <div className="space-y-1">
+            <Label className="text-xs text-muted-foreground">{t.members.filter.endDate}</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !endDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {endDate ? format(endDate, "PP") : t.members.filter.selectDate}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={endDate}
+                  onSelect={setEndDate}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+        </div>
+        {(startDate || endDate) && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              setStartDate(undefined)
+              setEndDate(undefined)
+            }}
+            className="w-full"
+          >
+            <X className="h-4 w-4 mr-1" />
+            {t.members.toolbar.clearDate}
+          </Button>
+        )}
+      </div>
+    </div>
+  )
+
   return (
     <MainLayout
       breadcrumbs={[
@@ -82,12 +189,15 @@ const MembersPage = () => {
         <CardContent>
           <DataTable
             columns={columns}
-            data={dummyMembers}
+            data={filteredData}
             searchPlaceholder={t.members.searchPlaceholder}
             searchKey="name"
             noResultsText={t.members.noResults}
             paginationLabels={t.members.pagination}
             toolbarLabels={t.members.toolbar}
+            filterContent={filterContent}
+            onApplyFilter={handleApplyFilter}
+            onClearFilter={handleClearFilter}
           />
         </CardContent>
       </Card>

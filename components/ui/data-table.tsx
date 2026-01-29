@@ -38,6 +38,7 @@ import {
   SheetTrigger,
   SheetFooter,
 } from "@/components/ui/sheet"
+import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 
 interface DataTableProps<TData, TValue> {
@@ -150,11 +151,12 @@ export function DataTable<TData, TValue>({
               {toolbarLabels.filter}
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" className="w-[400px] sm:w-[450px]">
-            <SheetHeader>
-              <SheetTitle>{toolbarLabels.filterTitle}</SheetTitle>
+          <SheetContent side="right" className="sm:max-w-lg gap-0">
+            <SheetHeader className="pb-5">
+              <SheetTitle className="pb-1">{toolbarLabels.filterTitle}</SheetTitle>
+              <Separator />
             </SheetHeader>
-            <div className="flex-1 overflow-y-auto px-4 py-4">
+            <div className="flex-1 overflow-y-auto px-4 pt-2 pb-4">
               <div className="space-y-4">
                 {filterContent}
               </div>
