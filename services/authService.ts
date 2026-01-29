@@ -1,3 +1,5 @@
+import { User, UserResponse } from '@/types'
+
 export type LoginRequest = {
   email: string
   password: string
@@ -35,6 +37,26 @@ class AuthService {
     } catch (error) {
       console.log('Internal server error: ', error)
       throw error
+    }
+  }
+
+  async getMe(token: string): Promise<User | null> {
+    try {
+      const req = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+        method: "GET",
+        headers: this.getHeaders(token),
+      })
+
+      const res: UserResponse = await req.json()
+
+      if (res.success) {
+        return res.data
+      }
+
+      return null
+    } catch (error) {
+      console.log('Internal server error: ', error)
+      return null
     }
   }
 }
