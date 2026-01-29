@@ -30,7 +30,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       items: [
         {
           title: t.sidebar.nav.dashboard,
-          url: "#",
+          url: "/",
         },
         {
           title: t.sidebar.nav.cashier,
@@ -38,7 +38,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         },
         {
           title: t.sidebar.nav.users,
-          url: "#",
+          url: "/members",
         },
       ],
     },

@@ -3,7 +3,7 @@ export const sidebar = {
     general: "General",
     dashboard: "Dashboard",
     cashier: "Cashier",
-    users: "Users",
+    users: "Members",
     operations: "Operations",
     kitchen: "Kitchen (KDS)",
     restock: "Restock Items",

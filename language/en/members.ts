@@ -1,0 +1,33 @@
+export const members = {
+  breadcrumbs: {
+    general: "General",
+    members: "Members",
+  },
+  title: "Members",
+  searchPlaceholder: "Search members...",
+  noResults: "No results found.",
+  columns: {
+    name: "Name",
+    email: "Email",
+    phone: "Phone",
+    address: "Address",
+    joinDate: "Join Date",
+  },
+  pagination: {
+    previous: "Previous",
+    next: "Next",
+    page: "Page",
+    of: "of",
+    showing: "Showing",
+    to: "to",
+    entries: "entries",
+  },
+  toolbar: {
+    columns: "Columns",
+    dateFilter: "Filter by Date",
+    pickDate: "Pick a date",
+    clearDate: "Clear",
+    sortAsc: "Sort Ascending",
+    sortDesc: "Sort Descending",
+  },
+}

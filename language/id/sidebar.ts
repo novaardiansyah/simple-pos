@@ -3,7 +3,7 @@ export const sidebar = {
     general: "Umum",
     dashboard: "Dashboard",
     cashier: "Mesin Kasir",
-    users: "Pengguna",
+    users: "Pelanggan",
     operations: "Operasional",
     kitchen: "Dapur (KDS)",
     restock: "Restock Barang",
